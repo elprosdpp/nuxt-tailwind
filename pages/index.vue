@@ -55,7 +55,8 @@
       </div>
     </div>
 
-    <div class="flex flex-wrap justify-center items-center">
+    <div v-if="items.length == ''">Data Tidak Ditemukan</div>
+    <div v-else class="flex flex-wrap justify-center items-center">
       <div
         v-for="item in items"
         :key="item.id"
