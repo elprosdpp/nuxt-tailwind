@@ -27,7 +27,7 @@
             </svg>
           </div>
           <input
-            v-model.lazy="search"
+            v-model="search"
             type="search"
             class="block p-4 pl-10 w-80 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 lg:w-[25rem]"
             placeholder="Cari Berita"
@@ -36,7 +36,17 @@
           />
         </div>
       </div>
-
+      <div class="">
+        <select
+          class="bg-gray-50 my-4 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 lg:ml-5 lg:my-0"
+          @change="changeItem($event.target.value)"
+        >
+          <option value="">Semua Kategori</option>
+          <option v-for="item in category" :key="item.id" :value="item.slug_category">
+            {{ item.category }}
+          </option>
+        </select>
+      </div>
       <div class="inline-flex xs:mt-0">
         <button
           class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
@@ -55,7 +65,7 @@
       </div>
     </div>
 
-    <div v-if="items.length == ''">Data Tidak Ditemukan</div>
+    <div v-if="!items || !items.length">Data Tidak Ditemukan</div>
     <div v-else class="flex flex-wrap justify-center items-center">
       <div
         v-for="item in items"
@@ -112,15 +122,18 @@ export default {
   data() {
     return {
       items: [],
-      pages: "",
+      pages: 1,
       lastPage: "",
       disabled: null,
       search: "",
+      category: [],
+      selected: "",
     };
   },
 
   async fetch() {
     await this.getData();
+    await this.getCategory();
   },
 
   fetchDelay: 1000,
@@ -132,17 +145,28 @@ export default {
   },
 
   methods: {
-    async getData(pages = 1) {
+    async getData(pages) {
       const data = axios.get("http://localhost:8000/api/blog", {
         params: {
           page: pages,
           s: this.search,
+          k: this.selected,
         },
       });
       const result = await data;
       this.items = result.data.data;
       this.pages = result.data.meta.current_page;
       this.lastPage = result.data.meta.last_page;
+    },
+
+    async getCategory() {
+      const data = axios.get("http://localhost:8000/api/category");
+      const result = await data;
+      this.category = result.data.data;
+    },
+
+    changeItem(event) {
+      this.selected = event;
     },
   },
 };
