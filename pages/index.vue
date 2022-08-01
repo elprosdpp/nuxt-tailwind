@@ -144,6 +144,15 @@ export default {
     };
   },
 
+  watch: {
+    search() {
+      this.getData();
+    },
+    selected() {
+      this.getData();
+    },
+  },
+
   methods: {
     async getData(pages) {
       const data = axios.get("http://localhost:8000/api/blog", {
