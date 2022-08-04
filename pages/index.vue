@@ -119,6 +119,7 @@ import axios from "axios";
 
 export default {
   name: "IndexPage",
+
   data() {
     return {
       items: [],
@@ -130,20 +131,16 @@ export default {
       selected: "",
     };
   },
-
   async fetch() {
     await this.getData();
     await this.getCategory();
   },
-
   fetchDelay: 1000,
-
   head() {
     return {
       title: "Blog",
     };
   },
-
   watch: {
     search() {
       this.getData();
@@ -152,7 +149,6 @@ export default {
       this.getData();
     },
   },
-
   methods: {
     async getData(pages) {
       const data = axios.get("http://localhost:8000/api/blog", {
@@ -167,13 +163,11 @@ export default {
       this.pages = result.data.meta.current_page;
       this.lastPage = result.data.meta.last_page;
     },
-
     async getCategory() {
       const data = axios.get("http://localhost:8000/api/category");
       const result = await data;
       this.category = result.data.data;
     },
-
     changeItem(event) {
       this.selected = event;
     },
